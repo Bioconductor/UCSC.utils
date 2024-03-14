@@ -8,7 +8,8 @@
 {
     if (!isTRUEorFALSE(recache))
         stop(wmsg("'recache' must be TRUE or FALSE"))
-    ans <- cached_rest_api_results[["ucscGenomes"]]
+    key <- "GENOMES"
+    ans <- cached_rest_api_results[[key]]
     if (is.null(ans) || recache) {
         url <- UCSC_REST_API_URL
         response <- GET(url, path="list/ucscGenomes")
@@ -17,7 +18,7 @@
         json <- content(response, as="text", encoding="UTF-8")
         ans <- fromJSON(json)[["ucscGenomes"]]
         stopifnot(is.list(ans))  # sanity check
-        cached_rest_api_results[["ucscGenomes"]] <- ans
+        cached_rest_api_results[[key]] <- ans
     }
     ans
 }
@@ -89,14 +90,27 @@ list_UCSC_genomes <- function(organism=NA, recache=FALSE)
 }
 
 ### Convenience helper based on list_UCSC_genomes().
+### Vectorized.
 get_organism_for_UCSC_genome <- function(genome)
 {
-    if (!(isSingleString(genome) && nzchar(genome)))
-        stop(wmsg("'genome' must be a single (non-empty) string"))
+    if (!is.character(genome))
+        stop(wmsg("'genome' must be a character vector"))
+    if (anyNA(genome) || !all(nzchar(genome))) {
+        if (length(genome) == 1L)
+            msg <- "be NA or the empty string"
+        else
+            msg <- "contain NAs or empty strings"
+        stop(wmsg("'genome' cannot ", msg))
+    }
     df <- list_UCSC_genomes()
     idx <- match(genome, df$genome)
-    if (is.na(idx))
-        stop(wmsg(genome, ": unknown UCSC genome"))
-    as.character(df$organism[idx])
+    if (anyNA(idx)) {
+        bad_genomes <- genome[is.na(idx)]
+        if (length(bad_genomes) == 1L)
+            stop(wmsg(bad_genomes, ": unknown UCSC genome"))
+        bad_genomes <- paste(bad_genomes, collapse=",")
+        stop(wmsg(bad_genomes, ": unknown UCSC genomes"))
+    }
+    setNames(as.character(df$organism[idx]), genome)
 }
 

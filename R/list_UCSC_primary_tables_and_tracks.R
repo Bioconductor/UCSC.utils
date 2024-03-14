@@ -10,7 +10,8 @@
         stop(wmsg("'genome' must be a single (non-empty) string"))
     if (!isTRUEorFALSE(recache))
         stop(wmsg("'recache' must be TRUE or FALSE"))
-    ans <- cached_rest_api_results[[genome]]
+    key <- paste0(genome, "_TRACKS")
+    ans <- cached_rest_api_results[[key]]
     if (is.null(ans) || recache) {
         url <- UCSC_REST_API_URL
         response <- GET(url, path="list/tracks", query=list(genome=genome))
@@ -19,7 +20,7 @@
         json <- content(response, as="text", encoding="UTF-8")
         ans <- fromJSON(json)[[genome]]
         stopifnot(is.list(ans))  # sanity check
-        cached_rest_api_results[[genome]] <- ans
+        cached_rest_api_results[[key]] <- ans
     }
     ans
 }
@@ -42,14 +43,14 @@ list_UCSC_primary_tables_and_tracks <-
         stop(wmsg("'track_group' must be a single string, or NA, or NULL"))
     genome_tracks <- .get_UCSC_genome_tracks(genome, recache=recache)
 
-    track_groups <- vapply(genome_tracks,
+    track_groups <- factor(vapply(genome_tracks,
         function(track) {
             stopifnot(is.list(track))  # sanity check
             idx <- match("group", names(track))
             if (is.na(idx)) NA_character_ else track[[idx]]
         },
         character(1), USE.NAMES=FALSE
-    )
+    ), exclude=character(0))
     if (!is.null(track_group)) {
         keep_idx <- which(track_groups %in% track_group)
         genome_tracks <- genome_tracks[keep_idx]

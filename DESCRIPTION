@@ -11,6 +11,6 @@ License: Artistic-2.0
 Encoding: UTF-8
 Authors@R: person("Hervé", "Pagès", role=c("aut", "cre"),
 	          email="hpages.on.github@gmail.com")
-Imports: methods, httr, rjson, S4Vectors
-Suggests: DBI, RMariaDB, testthat, knitr, rmarkdown, BiocStyle
+Imports: methods, stats, httr, rjson, S4Vectors
+Suggests: DBI, RMariaDB, GenomeInfoDb, testthat, knitr, rmarkdown, BiocStyle
 VignetteBuilder: knitr
