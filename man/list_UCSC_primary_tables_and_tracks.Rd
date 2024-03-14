@@ -16,7 +16,8 @@ list_UCSC_primary_tables_and_tracks(genome, track_group=NULL, recache=FALSE)
 \arguments{
   \item{genome}{
     A single string specifying the name of a UCSC genome e.g. \code{"hg38"},
-    \code{"mm39"}, or \code{"sacCer3"}).
+    \code{"mm39"}, or \code{"sacCer3"}. See \code{?\link{list_UCSC_genomes}}
+    for how to get the list of valid UCSC genome names.
   }
   \item{track_group}{
     \code{NULL} or a single string specifying the group of tables+tracks
@@ -45,6 +46,8 @@ list_UCSC_primary_tables_and_tracks(genome, track_group=NULL, recache=FALSE)
 
 \seealso{
   \itemize{
+    \item \code{\link{list_UCSC_genomes}} to get the list of UCSC genomes.
+
     \item The \code{\link[GenomeInfoDb]{Seqinfo}} constructor function
           in the \pkg{GenomeInfoDb} package for an alternate (higher level)
           way to retrieve the chromosome information for a given NCBI assembly
