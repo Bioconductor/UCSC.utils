@@ -1,15 +1,16 @@
 Package: UCSCutils
 Title: Low-level utilities to retrieve data from the UCSC Genome Browser
 Description: A set of low-level utilities to retrieve data from the UCSC
-	Genome Browser thru the UCSC REST API.
+	Genome Browser. Data is accessed via the UCSC REST API or by querying
+	the UCSC MySQL server directly.
 biocViews: Infrastructure, Annotation, GenomeAnnotation, DataImport
 URL: https://bioconductor.org/packages/UCSCutils
 BugReports: https://github.com/Bioconductor/UCSCutils/issues
-Version: 0.0.1
+Version: 0.0.2
 License: Artistic-2.0
 Encoding: UTF-8
 Authors@R: person("Hervé", "Pagès", role=c("aut", "cre"),
 	          email="hpages.on.github@gmail.com")
-Imports: httr, rjson
-Suggests: testthat, knitr, rmarkdown, BiocStyle
+Imports: methods, httr, rjson, S4Vectors
+Suggests: DBI, RMariaDB, testthat, knitr, rmarkdown, BiocStyle
 VignetteBuilder: knitr
