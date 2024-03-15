@@ -22,3 +22,24 @@ test_that("list_UCSC_genomes()", {
     expect_error(list_UCSC_genomes(organism=22))
 })
 
+test_that("get_organism_for_UCSC_genome()", {
+    genomes <- c("hs1", "hg38", "dm6", "ce11", "mm39",
+                 "dm6", "xenTro10", "mpxvRivers")
+    expected <- c("Homo sapiens", "Homo sapiens", "Drosophila melanogaster",
+                  "Caenorhabditis elegans", "Mus musculus",
+                  "Drosophila melanogaster", "Xenopus tropicalis",
+                  "Monkeypox virus")
+    names(expected) <- genomes
+    result <- get_organism_for_UCSC_genome(genomes)
+    expect_identical(result, expected)
+
+    result <- get_organism_for_UCSC_genome(character(0))
+    expect_identical(result, setNames(character(0), character(0)))
+
+    expect_error(get_organism_for_UCSC_genome(NULL))
+    expect_error(get_organism_for_UCSC_genome(22))
+    expect_error(get_organism_for_UCSC_genome(""))
+    expect_error(get_organism_for_UCSC_genome(NA))
+    expect_error(get_organism_for_UCSC_genome("_not_a_genome_"))
+})
+

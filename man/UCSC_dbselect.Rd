@@ -59,6 +59,10 @@ UCSC_dbselect(dbname, from, columns=NULL, where=NULL,
 
 \examples{
 UCSC_dbselect("hg38", "knownGene", where="chrom='chrM'")
+
+columns <- c("chrom", "chromStart", "chromEnd", "type")
+where <- "chrom='chrX' AND type='contig'"
+UCSC_dbselect("gorGor6", "gap", columns=columns, where=where)
 }
 
 \keyword{manip}

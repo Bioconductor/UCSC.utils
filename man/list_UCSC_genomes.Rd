@@ -12,7 +12,7 @@
 \usage{
 list_UCSC_genomes(organism=NA, recache=FALSE)
 
-get_organism_for_UCSC_genome(genome)
+get_organism_for_UCSC_genome(genome, recache=FALSE)
 }
 
 \arguments{
@@ -32,6 +32,10 @@ get_organism_for_UCSC_genome(genome)
     sessions).
     Setting \code{recache} to \code{TRUE} forces a new download (and
     recaching) of the list of genomes.
+
+    In the case of \code{get_organism_for_UCSC_genome()}, the supplied
+    \code{recache} value is just passed down to the internal call
+    to \code{list_UCSC_genomes()}.
   }
   \item{genome}{
     A character vector of valid UCSC genomes e.g. \code{"hg38"},

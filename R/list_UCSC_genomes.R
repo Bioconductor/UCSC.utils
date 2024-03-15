@@ -1,5 +1,5 @@
 ### =========================================================================
-### list_UCSC_genomes()
+### list_UCSC_genomes() and get_organism_for_UCSC_genome()
 ### -------------------------------------------------------------------------
 ###
 
@@ -91,7 +91,7 @@ list_UCSC_genomes <- function(organism=NA, recache=FALSE)
 
 ### Convenience helper based on list_UCSC_genomes().
 ### Vectorized.
-get_organism_for_UCSC_genome <- function(genome)
+get_organism_for_UCSC_genome <- function(genome, recache=FALSE)
 {
     if (!is.character(genome))
         stop(wmsg("'genome' must be a character vector"))
@@ -102,7 +102,7 @@ get_organism_for_UCSC_genome <- function(genome)
             msg <- "contain NAs or empty strings"
         stop(wmsg("'genome' cannot ", msg))
     }
-    df <- list_UCSC_genomes()
+    df <- list_UCSC_genomes(recache=recache)
     idx <- match(genome, df$genome)
     if (anyNA(idx)) {
         bad_genomes <- genome[is.na(idx)]

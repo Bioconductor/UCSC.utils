@@ -11,3 +11,4 @@ test_that("get_UCSC_chrom_sizes()", {
     expect_error(get_UCSC_chrom_sizes("_not_a_genome_"))
 
 })
+
