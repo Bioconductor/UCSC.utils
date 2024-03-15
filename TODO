@@ -1,0 +1,3 @@
+- Compare results obtained with get_UCSC_chrom_sizes() with result obtained
+  with GenomeInfoDb:::fetch_chrom_sizes_from_UCSC().
+
