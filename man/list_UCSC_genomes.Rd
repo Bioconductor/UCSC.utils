@@ -58,6 +58,13 @@ get_organism_for_UCSC_genome(genome)
     \item \code{\link[GenomeInfoDb]{registered_UCSC_genomes}} in the
           \pkg{GenomeInfoDb} package for a similar function that returns
           only UCSC genomes registered in the \pkg{GenomeInfoDb} package.
+
+    \item \code{\link{get_UCSC_chrom_sizes}} to get the chromosome sizes
+          of a given UCSC genome.
+
+    \item \code{\link{list_UCSC_primary_tables_and_tracks}} to get the
+          list of primary tables and associated tracks for a given
+          UCSC genome.
   }
 }
 

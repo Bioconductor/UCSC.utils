@@ -48,10 +48,8 @@ list_UCSC_primary_tables_and_tracks(genome, track_group=NULL, recache=FALSE)
   \itemize{
     \item \code{\link{list_UCSC_genomes}} to get the list of UCSC genomes.
 
-    \item The \code{\link[GenomeInfoDb]{Seqinfo}} constructor function
-          in the \pkg{GenomeInfoDb} package for an alternate (higher level)
-          way to retrieve the chromosome information for a given NCBI assembly
-          or UCSC genome.
+    \item \code{\link{get_UCSC_chrom_sizes}} to get the chromosome sizes
+          of a given UCSC genome.
   }
 }
 
