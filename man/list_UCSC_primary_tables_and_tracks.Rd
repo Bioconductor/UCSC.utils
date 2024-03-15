@@ -10,7 +10,8 @@
 }
 
 \usage{
-list_UCSC_primary_tables_and_tracks(genome, track_group=NULL, recache=FALSE)
+list_UCSC_primary_tables_and_tracks(genome, track_group=NULL,
+                                    api.url=UCSC.api.url(), recache=FALSE)
 }
 
 \arguments{
@@ -24,6 +25,12 @@ list_UCSC_primary_tables_and_tracks(genome, track_group=NULL, recache=FALSE)
     to retrieve. By default, all tracks are kept.
     Passing \code{track_group=NA} is accepted and will keep only rows
     associated with tracks that don't belong to any group.
+  }
+  \item{api.url}{
+    The URL of the UCSC API. By default, the URL returned by
+    \code{UCSC.api.url()} is used. Note that what \code{UCSC.api.url()}
+    returns is controlled by a global option. See \code{?\link{UCSC.api.url}}
+    for more information.
   }
   \item{recache}{
     \code{list_UCSC_primary_tables_and_tracks()} uses a cache mechanism
@@ -50,6 +57,9 @@ list_UCSC_primary_tables_and_tracks(genome, track_group=NULL, recache=FALSE)
 
     \item \code{\link{get_UCSC_chrom_sizes}} to get the chromosome sizes
           of a given UCSC genome.
+
+    \item \code{\link{UCSC.api.url}} for how to use an alternative
+          UCSC API URL by default.
   }
 }
 

@@ -7,6 +7,7 @@ importFrom(S4Vectors, wmsg, isTRUEorFALSE, isSingleNumber,
                       isSingleString, isSingleStringOrNA)
 
 export(
+    UCSC.api.url,
     list_UCSC_genomes,
     get_organism_for_UCSC_genome,
     get_UCSC_chrom_sizes,

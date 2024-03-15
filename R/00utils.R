@@ -1,5 +1,3 @@
-UCSC_REST_API_URL <- "https://api.genome.ucsc.edu"
-
 cached_rest_api_results <- new.env(parent=emptyenv())
 
 load_package_gracefully <- function(package, ...)

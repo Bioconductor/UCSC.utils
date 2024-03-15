@@ -4,15 +4,14 @@
 ###
 
 
-.get_UCSC_genomes <- function(recache=FALSE)
+.get_UCSC_genomes <- function(api.url=UCSC.api.url(), recache=FALSE)
 {
     if (!isTRUEorFALSE(recache))
         stop(wmsg("'recache' must be TRUE or FALSE"))
     key <- "GENOMES"
     ans <- cached_rest_api_results[[key]]
     if (is.null(ans) || recache) {
-        url <- UCSC_REST_API_URL
-        response <- GET(url, path="list/ucscGenomes")
+        response <- query_UCSC_api("list/ucscGenomes", api.url=api.url)
         if (response$status_code != 200L)
             stop(wmsg("failed to retrieve list of UCSC genomes"))
         json <- content(response, as="text", encoding="UTF-8")
@@ -43,11 +42,12 @@ order_organism_genome_pairs <- function(organism, genome)
 ###     the difference that we also search matches in the "common_name"
 ###     column (in addition to matches in the "organism" column);
 ###   - order of rows in the returned data frame.
-list_UCSC_genomes <- function(organism=NA, recache=FALSE)
+list_UCSC_genomes <- function(organism=NA, api.url=UCSC.api.url(),
+                                           recache=FALSE)
 {
     if (!isSingleStringOrNA(organism))
         stop(wmsg("'organism' must be a single string or NA"))
-    genomes <- .get_UCSC_genomes(recache=recache)
+    genomes <- .get_UCSC_genomes(api.url=api.url, recache=recache)
 
     ans_organism <- factor(vapply(genomes,
         function(genome) {
@@ -91,7 +91,8 @@ list_UCSC_genomes <- function(organism=NA, recache=FALSE)
 
 ### Convenience helper based on list_UCSC_genomes().
 ### Vectorized.
-get_organism_for_UCSC_genome <- function(genome, recache=FALSE)
+get_organism_for_UCSC_genome <- function(genome, api.url=UCSC.api.url(),
+                                                 recache=FALSE)
 {
     if (!is.character(genome))
         stop(wmsg("'genome' must be a character vector"))
@@ -102,7 +103,7 @@ get_organism_for_UCSC_genome <- function(genome, recache=FALSE)
             msg <- "contain NAs or empty strings"
         stop(wmsg("'genome' cannot ", msg))
     }
-    df <- list_UCSC_genomes(recache=recache)
+    df <- list_UCSC_genomes(api.url=api.url, recache=recache)
     idx <- match(genome, df$genome)
     if (anyNA(idx)) {
         bad_genomes <- genome[is.na(idx)]

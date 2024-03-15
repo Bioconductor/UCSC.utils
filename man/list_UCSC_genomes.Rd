@@ -10,9 +10,9 @@
 }
 
 \usage{
-list_UCSC_genomes(organism=NA, recache=FALSE)
+list_UCSC_genomes(organism=NA, api.url=UCSC.api.url(), recache=FALSE)
 
-get_organism_for_UCSC_genome(genome, recache=FALSE)
+get_organism_for_UCSC_genome(genome, api.url=UCSC.api.url(), recache=FALSE)
 }
 
 \arguments{
@@ -24,6 +24,12 @@ get_organism_for_UCSC_genome(genome, recache=FALSE)
     used to perform a search (with \code{grep()}) on the \code{organism}
     and \code{common_name} columns of the data frame to return.
     The search is case-insensitive.
+  }
+  \item{api.url}{
+    The URL of the UCSC API. By default, the URL returned by
+    \code{UCSC.api.url()} is used. Note that what \code{UCSC.api.url()}
+    returns is controlled by a global option. See \code{?\link{UCSC.api.url}}
+    for more information.
   }
   \item{recache}{
     \code{list_UCSC_genomes()} uses a cache mechanism so the list of genomes
@@ -69,6 +75,9 @@ get_organism_for_UCSC_genome(genome, recache=FALSE)
     \item \code{\link{list_UCSC_primary_tables_and_tracks}} to get the
           list of primary tables and associated tracks for a given
           UCSC genome.
+
+    \item \code{\link{UCSC.api.url}} for how to use an alternative
+          UCSC API URL by default.
   }
 }
 

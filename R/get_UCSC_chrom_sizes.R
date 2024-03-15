@@ -22,7 +22,7 @@
     chrom_sizes
 }
 
-get_UCSC_chrom_sizes <- function(genome, recache=FALSE)
+get_UCSC_chrom_sizes <- function(genome, api.url=UCSC.api.url(), recache=FALSE)
 {
     if (!(isSingleString(genome) && nzchar(genome)))
         stop(wmsg("'genome' must be a single (non-empty) string"))
@@ -31,10 +31,12 @@ get_UCSC_chrom_sizes <- function(genome, recache=FALSE)
     key <- paste0(genome, "_CHROMOSOMES")
     ans <- cached_rest_api_results[[key]]
     if (is.null(ans) || recache) {
-        url <- UCSC_REST_API_URL
-        response <- GET(url, path="list/chromosomes", query=list(genome=genome))
+        query <- list(genome=genome)
+        response <- query_UCSC_api("list/chromosomes", query=query,
+                                                       api.url=api.url)
         if (response$status_code != 200L)
-            stop(wmsg(genome, ": unknown UCSC genome (or ", url, " is down?)"))
+            stop(wmsg(genome, ": unknown UCSC genome ",
+                      "(or ", response$url, " is down?)"))
         json <- content(response, as="text", encoding="UTF-8")
         ans <- .extract_chrom_sizes_from_JSON(json)
         cached_rest_api_results[[key]] <- ans

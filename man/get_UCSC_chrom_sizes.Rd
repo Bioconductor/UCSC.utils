@@ -9,7 +9,7 @@
 }
 
 \usage{
-get_UCSC_chrom_sizes(genome, recache=FALSE)
+get_UCSC_chrom_sizes(genome, api.url=UCSC.api.url(), recache=FALSE)
 }
 
 \arguments{
@@ -17,6 +17,12 @@ get_UCSC_chrom_sizes(genome, recache=FALSE)
     A single string specifying the name of a UCSC genome e.g. \code{"hs1"},
     \code{"mm39"}, or \code{"sacCer3"}. See \code{?\link{list_UCSC_genomes}}
     for how to get the list of valid UCSC genome names.
+  }
+  \item{api.url}{
+    The URL of the UCSC API. By default, the URL returned by
+    \code{UCSC.api.url()} is used. Note that what \code{UCSC.api.url()}
+    returns is controlled by a global option. See \code{?\link{UCSC.api.url}}
+    for more information.
   }
   \item{recache}{
     \code{get_UCSC_chrom_sizes()} uses a cache mechanism so the information
@@ -48,6 +54,9 @@ get_UCSC_chrom_sizes(genome, recache=FALSE)
     \item \code{\link{list_UCSC_primary_tables_and_tracks}} to get the
           list of primary tables and associated tracks for a given
           UCSC genome.
+
+    \item \code{\link{UCSC.api.url}} for how to use an alternative
+          UCSC API URL by default.
   }
 }
 

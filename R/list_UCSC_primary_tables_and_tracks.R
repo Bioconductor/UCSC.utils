@@ -4,7 +4,8 @@
 ###
 
 
-.get_UCSC_genome_tracks <- function(genome, recache=FALSE)
+.get_UCSC_genome_tracks <- function(genome, api.url=UCSC.api.url(),
+                                            recache=FALSE)
 {
     if (!(isSingleString(genome) && nzchar(genome)))
         stop(wmsg("'genome' must be a single (non-empty) string"))
@@ -13,10 +14,11 @@
     key <- paste0(genome, "_TRACKS")
     ans <- cached_rest_api_results[[key]]
     if (is.null(ans) || recache) {
-        url <- UCSC_REST_API_URL
-        response <- GET(url, path="list/tracks", query=list(genome=genome))
+        query=list(genome=genome)
+        response <- query_UCSC_api("list/tracks", query=query, api.url=api.url)
         if (response$status_code != 200L)
-            stop(wmsg(genome, ": unknown UCSC genome (or ", url, " is down?)"))
+            stop(wmsg(genome, ": unknown UCSC genome ",
+                      "(or ", response$url, " is down?)"))
         json <- content(response, as="text", encoding="UTF-8")
         ans <- fromJSON(json)[[genome]]
         stopifnot(is.list(ans))  # sanity check
@@ -37,11 +39,12 @@
 ### argument is NULL and not NA like for the 'organism' argument in
 ### list_UCSC_genomes() above.
 list_UCSC_primary_tables_and_tracks <-
-    function(genome, track_group=NULL, recache=FALSE)
+    function(genome, track_group=NULL, api.url=UCSC.api.url(), recache=FALSE)
 {
     if (!(is.null(track_group) || isSingleStringOrNA(track_group)))
         stop(wmsg("'track_group' must be a single string, or NA, or NULL"))
-    genome_tracks <- .get_UCSC_genome_tracks(genome, recache=recache)
+    genome_tracks <- .get_UCSC_genome_tracks(genome, api.url=api.url,
+                                                     recache=recache)
 
     track_groups <- factor(vapply(genome_tracks,
         function(track) {
