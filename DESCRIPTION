@@ -1,12 +1,16 @@
 Package: UCSC.utils
 Title: Low-level utilities to retrieve data from the UCSC Genome Browser
 Description: A set of low-level utilities to retrieve data from the UCSC
-	Genome Browser. Data is accessed via the UCSC REST API or by querying
-	the UCSC MySQL server directly.
-biocViews: Infrastructure, Annotation, GenomeAnnotation, DataImport
+	Genome Browser. Most functions in the package access the data via
+	the UCSC REST API but some of them query the UCSC MySQL server
+	directly. Note that the primary purpose of the package is to support
+	higher-level functionalities implemented in downstream packages
+	like GenomeInfoDb or txdbmaker.
+biocViews: Infrastructure, GenomeAssembly, Annotation, GenomeAnnotation,
+	DataImport
 URL: https://bioconductor.org/packages/UCSC.utils
 BugReports: https://github.com/Bioconductor/UCSC.utils/issues
-Version: 0.0.2
+Version: 0.1.0
 License: Artistic-2.0
 Encoding: UTF-8
 Authors@R: person("Hervé", "Pagès", role=c("aut", "cre"),
