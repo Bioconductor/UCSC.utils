@@ -4,7 +4,8 @@ importFrom(httr, GET, content)
 importFrom(rjson, fromJSON)
 
 importFrom(S4Vectors, wmsg, isTRUEorFALSE, isSingleNumber,
-                      isSingleString, isSingleStringOrNA)
+                      isSingleString, isSingleStringOrNA,
+                      toListOfIntegerVectors)
 
 export(
     UCSC.api.url,

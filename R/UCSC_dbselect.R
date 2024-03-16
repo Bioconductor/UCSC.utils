@@ -35,7 +35,8 @@
 ### Here is an example of how to query the server on the US west coast from
 ### the Unix command line:
 ###
-###   mysql --user=genome --host=genome-mysql.soe.ucsc.edu mm10 -e "select count(*) from knownToLocusLink;"
+###   mysql --user=genome --host=genome-mysql.soe.ucsc.edu mm10 \
+###         -e "select count(*) from knownToLocusLink;"
 ###
 ### By default UCSC_dbselect() uses the server located on the US west coast.
 UCSC_dbselect <- function(dbname, from, columns=NULL, where=NULL,
@@ -51,6 +52,12 @@ UCSC_dbselect <- function(dbname, from, columns=NULL, where=NULL,
                                                   host=host,
                                                   port=port)
     on.exit(DBI::dbDisconnect(dbconn))
-    DBI::dbGetQuery(dbconn, SQL)
+    ans <- DBI::dbGetQuery(dbconn, SQL)
+    for (j in seq_along(ans)) {
+        if (!inherits(ans[[j]], "blob"))
+            next
+        ans[[j]] <- toListOfIntegerVectors(ans[[j]])
+    }
+    ans
 }
 
