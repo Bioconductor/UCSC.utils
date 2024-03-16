@@ -4,19 +4,14 @@
 ###
 
 
-.get_UCSC_genomes <- function(api.url=UCSC.api.url(), recache=FALSE)
+.list_UCSC_genomes <- function(api.url=UCSC.api.url(), recache=FALSE)
 {
     if (!isTRUEorFALSE(recache))
         stop(wmsg("'recache' must be TRUE or FALSE"))
     key <- "GENOMES"
     ans <- cached_rest_api_results[[key]]
     if (is.null(ans) || recache) {
-        response <- query_UCSC_api("list/ucscGenomes", api.url=api.url)
-        if (response$status_code != 200L)
-            stop(wmsg("failed to retrieve list of UCSC genomes"))
-        json <- content(response, as="text", encoding="UTF-8")
-        ans <- fromJSON(json)[["ucscGenomes"]]
-        stopifnot(is.list(ans))  # sanity check
+        ans <- API_list_genomes(api.url=api.url)
         cached_rest_api_results[[key]] <- ans
     }
     ans
@@ -47,17 +42,17 @@ list_UCSC_genomes <- function(organism=NA, api.url=UCSC.api.url(),
 {
     if (!isSingleStringOrNA(organism))
         stop(wmsg("'organism' must be a single string or NA"))
-    genomes <- .get_UCSC_genomes(api.url=api.url, recache=recache)
+    genomes <- .list_UCSC_genomes(api.url=api.url, recache=recache)
 
     ans_organism <- factor(vapply(genomes,
         function(genome) {
             stopifnot(is.list(genome))  # sanity check
-            genome$scientificName
+            genome[["scientificName"]]
         },
         character(1), USE.NAMES=FALSE
     ))
     ans_common_name <- factor(vapply(genomes,
-        function(genome) genome$organism,
+        function(genome) genome[["organism"]],
         character(1), USE.NAMES=FALSE
     ))
     if (!is.na(organism)) {
@@ -70,11 +65,11 @@ list_UCSC_genomes <- function(organism=NA, api.url=UCSC.api.url(),
 
     ans_genome <- names(genomes)
     ans_tax_id <- vapply(genomes,
-        function(genome) as.integer(genome$taxId),
+        function(genome) as.integer(genome[["taxId"]]),
         integer(1), USE.NAMES=FALSE
     )
     ans_description <- vapply(genomes,
-        function(genome) genome$description,
+        function(genome) genome[["description"]],
         character(1), USE.NAMES=FALSE
     )
 
@@ -85,12 +80,16 @@ list_UCSC_genomes <- function(organism=NA, api.url=UCSC.api.url(),
         tax_id=ans_tax_id,
         description=ans_description
     )
-    oo <- order_organism_genome_pairs(ans$organism, ans$genome)
+    oo <- order_organism_genome_pairs(ans[ , "organism"], ans[ , "genome"])
     S4Vectors:::extract_data_frame_rows(ans, oo)
 }
 
-### Convenience helper based on list_UCSC_genomes().
-### Vectorized.
+
+### - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+### get_organism_for_UCSC_genome()
+###
+
+### A convenience helper based on list_UCSC_genomes(). Vectorized.
 get_organism_for_UCSC_genome <- function(genome, api.url=UCSC.api.url(),
                                                  recache=FALSE)
 {
@@ -104,7 +103,7 @@ get_organism_for_UCSC_genome <- function(genome, api.url=UCSC.api.url(),
         stop(wmsg("'genome' cannot ", msg))
     }
     df <- list_UCSC_genomes(api.url=api.url, recache=recache)
-    idx <- match(genome, df$genome)
+    idx <- match(genome, df[ , "genome"])
     if (anyNA(idx)) {
         bad_genomes <- genome[is.na(idx)]
         if (length(bad_genomes) == 1L)
@@ -112,6 +111,20 @@ get_organism_for_UCSC_genome <- function(genome, api.url=UCSC.api.url(),
         bad_genomes <- paste(bad_genomes, collapse=",")
         stop(wmsg(bad_genomes, ": unknown UCSC genomes"))
     }
-    setNames(as.character(df$organism[idx]), genome)
+    setNames(as.character(df[idx, "organism"]), genome)
+}
+
+
+### - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+### Internal helper check_genome()
+###
+
+### Not exported.
+check_genome <- function(genome)
+{
+    if (!(isSingleString(genome) && nzchar(genome)))
+        stop(wmsg("'genome' must be a single (non-empty) string"))
+    if (!(genome %in% list_UCSC_genomes()[ , "genome"]))
+        stop(wmsg(genome, ": unknown UCSC genome "))
 }
 

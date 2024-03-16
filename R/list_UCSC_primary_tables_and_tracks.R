@@ -7,21 +7,13 @@
 .get_UCSC_genome_tracks <- function(genome, api.url=UCSC.api.url(),
                                             recache=FALSE)
 {
-    if (!(isSingleString(genome) && nzchar(genome)))
-        stop(wmsg("'genome' must be a single (non-empty) string"))
+    check_genome(genome)
     if (!isTRUEorFALSE(recache))
         stop(wmsg("'recache' must be TRUE or FALSE"))
     key <- paste0(genome, "_TRACKS")
     ans <- cached_rest_api_results[[key]]
     if (is.null(ans) || recache) {
-        query=list(genome=genome)
-        response <- query_UCSC_api("list/tracks", query=query, api.url=api.url)
-        if (response$status_code != 200L)
-            stop(wmsg(genome, ": unknown UCSC genome ",
-                      "(or ", response$url, " is down?)"))
-        json <- content(response, as="text", encoding="UTF-8")
-        ans <- fromJSON(json)[[genome]]
-        stopifnot(is.list(ans))  # sanity check
+        ans <- API_list_tracks(genome, api.url=api.url)
         cached_rest_api_results[[key]] <- ans
     }
     ans
@@ -61,17 +53,17 @@ list_UCSC_primary_tables_and_tracks <-
     }
 
     track_names <- vapply(genome_tracks,
-        function(track) track$shortLabel,
+        function(track) track[["shortLabel"]],
         character(1), USE.NAMES=FALSE
     )
     track_types <- vapply(genome_tracks,
-        function(track) track$type,
+        function(track) track[["type"]],
         character(1), USE.NAMES=FALSE
     )
 
     ## Extract tracks nested in composite tracks.
     is_composite <- vapply(genome_tracks,
-        function(track) identical(track$compositeTrack, "on"),
+        function(track) identical(track[["compositeTrack"]], "on"),
         logical(1), USE.NAMES=FALSE
     )
     nested_tracks <- lapply(genome_tracks[is_composite],
@@ -82,12 +74,12 @@ list_UCSC_primary_tables_and_tracks <-
     nested_primary_tables <- lapply(nested_tracks, names)
     nested_track_names <- lapply(nested_tracks,
         function(tracks) vapply(tracks,
-                                function(track) track$shortLabel,
+                                function(track) track[["shortLabel"]],
                                 character(1), USE.NAMES=FALSE)
     )
     nested_track_types <- lapply(nested_tracks,
         function(tracks) vapply(tracks,
-                                function(track) track$type,
+                                function(track) track[["type"]],
                                 character(1), USE.NAMES=FALSE)
     )
     nested_tracks_count <- lengths(nested_tracks)
