@@ -3,7 +3,7 @@ title: "The _UCSC.utils_ package"
 author:
 - name: Hervé Pagès
   affiliation: Fred Hutchinson Cancer Research Center, Seattle, WA
-date: "Compiled `r doc_date()`;  Modified 14 March 2024"
+date: "Compiled `r doc_date()`;  Modified 15 March 2024"
 package: UCSC.utils
 vignette: |
   %\VignetteIndexEntry{The UCSC.utils package}
@@ -70,9 +70,19 @@ list_UCSC_primary_tables_and_tracks("felCat9", track_group="varRep")
 See `?list_UCSC_primary_tables_and_tracks` for more information and
 additional examples.
 
+## fetch_UCSC_track_data()
+
+```{r fetch_UCSC_track_data}
+mm9_cytoBandIdeo <- fetch_UCSC_track_data("mm9", "cytoBandIdeo")
+head(mm9_cytoBandIdeo)
+```
+
+See `?fetch_UCSC_track_data` for more information and
+additional examples.
+
 ## UCSC_dbselect()
 
-Retrieve a full table:
+Retrieve a full SQL table:
 ```{r UCSC_dbselect}
 felCat9_refGene <- UCSC_dbselect("felCat9", "refGene")
 head(felCat9_refGene)

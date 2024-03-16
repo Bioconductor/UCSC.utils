@@ -6,7 +6,7 @@
 
 \description{
   A convenience utility to retrieve data from the UCSC MariaDB server
-  via simple \code{SELECT} statements.
+  via simple SQL \code{SELECT} statements.
 
   Requires the \pkg{RMariaDB} package!
 }
@@ -26,7 +26,7 @@ UCSC_dbselect(dbname, from, columns=NULL, where=NULL,
   \item{from}{
     A single string specifying the \emph{input data}, that is, the
     \code{FROM} clause of the \code{SELECT} statement. This is typically
-    the name of a table, or a join-clause, or a sub-query.
+    the name of an SQL table, or a join-clause, or a sub-query.
   }
   \item{columns}{
     A character vector specifying the table columns to retrieve.

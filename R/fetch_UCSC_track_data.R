@@ -38,8 +38,14 @@
         ## 'table_data' is a named list with the chromosome names on it. Each
         ## list element in 'table_data' is itself a list that represents a
         ## table.
-        dfs <- lapply(table_data[lengths(table_data) != 0L],
-                      .make_data_frame_from_list_of_rows)
+        idx <- which(lengths(table_data) != 0L)
+        if (length(idx) == 0L) {
+            ## We don't know what the columns would have been if the track
+            ## had some data so we return a 0-col data frame.
+            warning(wmsg("track is empty ==> returning a 0x0 data frame"))
+            return(data.frame())
+        }
+        dfs <- lapply(table_data[idx], .make_data_frame_from_list_of_rows)
         ans <- do.call(rbind, unname(dfs))
     }
     stopifnot(nrow(ans) == parsed_json[["itemsReturned"]])
