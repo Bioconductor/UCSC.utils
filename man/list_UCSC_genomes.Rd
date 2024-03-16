@@ -72,9 +72,8 @@ get_organism_for_UCSC_genome(genome, api.url=UCSC.api.url(), recache=FALSE)
     \item \code{\link{get_UCSC_chrom_sizes}} to get the chromosome sizes
           of a given UCSC genome.
 
-    \item \code{\link{list_UCSC_primary_tables_and_tracks}} to get the
-          list of primary tables and associated tracks for a given
-          UCSC genome.
+    \item \code{\link{list_UCSC_tracks}} to get the list of tracks and
+          associated primary tables for a given UCSC genome.
 
     \item \code{\link{UCSC.api.url}} for how to use an alternative
           UCSC API URL by default.

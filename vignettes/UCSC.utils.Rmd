@@ -61,13 +61,13 @@ head(felCat9_chrom_sizes)
 
 See `?get_UCSC_chrom_sizes` for more information and additional examples.
 
-## list_UCSC_primary_tables_and_tracks()
+## list_UCSC_tracks()
 
-```{r list_UCSC_primary_tables_and_tracks}
-list_UCSC_primary_tables_and_tracks("felCat9", track_group="varRep")
+```{r list_UCSC_tracks}
+list_UCSC_tracks("felCat9", group="varRep")
 ```
 
-See `?list_UCSC_primary_tables_and_tracks` for more information and
+See `?list_UCSC_tracks` for more information and
 additional examples.
 
 ## fetch_UCSC_track_data()

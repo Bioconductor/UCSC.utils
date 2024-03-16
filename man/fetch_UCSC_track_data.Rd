@@ -21,9 +21,8 @@ fetch_UCSC_track_data(genome, primary_table, api.url=UCSC.api.url())
   \item{primary_table}{
     A single string specifying the name of the primary table associated
     with the track from which to fetch the data.
-    See \code{?\link{list_UCSC_primary_tables_and_tracks}} for how to
-    get the list of primary tables and associated tracks for a given
-    UCSC genome.
+    See \code{?\link{list_UCSC_tracks}} for how to get the list of tracks
+    and associated primary tables for a given UCSC genome.
   }
   \item{api.url}{
     The URL of the UCSC API. By default, the URL returned by
@@ -41,9 +40,8 @@ fetch_UCSC_track_data(genome, primary_table, api.url=UCSC.api.url())
   \itemize{
     \item \code{\link{list_UCSC_genomes}} to get the list of UCSC genomes.
 
-    \item \code{\link{list_UCSC_primary_tables_and_tracks}} to get the
-          list of primary tables and associated tracks for a given
-          UCSC genome.
+    \item \code{\link{list_UCSC_tracks}} to get the list of tracks and
+          associated primary tables for a given UCSC genome.
 
     \item \code{\link{UCSC_dbselect}} for a more efficient/more flexible
           way to retrieve data directly from the UCSC MariaDB server.

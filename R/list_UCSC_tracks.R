@@ -1,5 +1,5 @@
 ### =========================================================================
-### list_UCSC_primary_tables_and_tracks()
+### list_UCSC_tracks()
 ### -------------------------------------------------------------------------
 ###
 
@@ -20,21 +20,21 @@
 }
 
 ### Typical usage:
-###     list_UCSC_primary_tables_and_tracks("ce2")
-###     list_UCSC_primary_tables_and_tracks("mm9", track_group="genes")
-###     list_UCSC_primary_tables_and_tracks("hg38", track_group=NA)
-### Returns a data.frame with 1 row per primary table and 5 columns:
-### primary_table, track, type, track_group, composite_track.
-### Note that the "track_group" and "composite_track" columns can contain NAs.
-### Passing 'track_group=NA' is accepted and keeps only rows for tracks that
-### don't belong to any group. This is why default value for the 'track_group'
+###     list_UCSC_tracks("ce2")
+###     list_UCSC_tracks("mm9", group="genes")
+###     list_UCSC_tracks("hg38", group=NA)
+### Returns a data.frame with 1 row per track and 5 columns:
+### track, primary_table, type, group, composite_track.
+### Note that columns "group" and "composite_track" can contain NAs.
+### Passing 'group=NA' is accepted and keeps only rows for tracks that
+### don't belong to any group. This is why default value for the 'group'
 ### argument is NULL and not NA like for the 'organism' argument in
 ### list_UCSC_genomes() above.
-list_UCSC_primary_tables_and_tracks <-
-    function(genome, track_group=NULL, api.url=UCSC.api.url(), recache=FALSE)
+list_UCSC_tracks <- function(genome, group=NULL,
+                             api.url=UCSC.api.url(), recache=FALSE)
 {
-    if (!(is.null(track_group) || isSingleStringOrNA(track_group)))
-        stop(wmsg("'track_group' must be a single string, or NA, or NULL"))
+    if (!(is.null(group) || isSingleStringOrNA(group)))
+        stop(wmsg("'group' must be a single string, or NA, or NULL"))
     genome_tracks <- .get_UCSC_genome_tracks(genome, api.url=api.url,
                                                      recache=recache)
 
@@ -46,13 +46,13 @@ list_UCSC_primary_tables_and_tracks <-
         },
         character(1), USE.NAMES=FALSE
     ), exclude=character(0))
-    if (!is.null(track_group)) {
-        keep_idx <- which(track_groups %in% track_group)
+    if (!is.null(group)) {
+        keep_idx <- which(track_groups %in% group)
         genome_tracks <- genome_tracks[keep_idx]
         track_groups <- track_groups[keep_idx]
     }
 
-    track_names <- vapply(genome_tracks,
+    track_shortlabels <- vapply(genome_tracks,
         function(track) track[["shortLabel"]],
         character(1), USE.NAMES=FALSE
     )
@@ -71,12 +71,12 @@ list_UCSC_primary_tables_and_tracks <-
             track[vapply(track, is.list, logical(1), USE.NAMES=FALSE)]
         }
     )
-    nested_primary_tables <- lapply(nested_tracks, names)
-    nested_track_names <- lapply(nested_tracks,
+    nested_track_shortlabels <- lapply(nested_tracks,
         function(tracks) vapply(tracks,
                                 function(track) track[["shortLabel"]],
                                 character(1), USE.NAMES=FALSE)
     )
+    nested_primary_tables <- lapply(nested_tracks, names)
     nested_track_types <- lapply(nested_tracks,
         function(tracks) vapply(tracks,
                                 function(track) track[["type"]],
@@ -86,8 +86,8 @@ list_UCSC_primary_tables_and_tracks <-
 
     ## Sanity checks.
     stopifnot(
+        identical(lengths(nested_track_shortlabels), nested_tracks_count),
         identical(lengths(nested_primary_tables), nested_tracks_count),
-        identical(lengths(nested_track_names), nested_tracks_count),
         identical(lengths(nested_track_types), nested_tracks_count)
     )
 
@@ -95,13 +95,13 @@ list_UCSC_primary_tables_and_tracks <-
     times <- rep.int(1L, length(genome_tracks))
     times[is_composite] <-  nested_tracks_count
     ans_is_composite <- rep.int(is_composite, times)
+    ans_track <- ans_composite_track <- rep.int(track_shortlabels, times)
+    ans_track[ans_is_composite] <-
+        unlist(nested_track_shortlabels, use.names=FALSE)
     ans_primary_table <- rep.int(names(genome_tracks), times)
     ans_primary_table[ans_is_composite] <-
         unlist(nested_primary_tables, use.names=FALSE)
     stopifnot(anyDuplicated(ans_primary_table) == 0L)  # sanity check
-    ans_track <- ans_composite_track <- rep.int(track_names, times)
-    ans_track[ans_is_composite] <-
-        unlist(nested_track_names, use.names=FALSE)
     ans_type <- rep.int(track_types, times)
     ans_type[ans_is_composite] <-
         unlist(nested_track_types, use.names=FALSE)
@@ -109,10 +109,10 @@ list_UCSC_primary_tables_and_tracks <-
     ans_composite_track[!ans_is_composite] <- NA_character_
 
     data.frame(
-        primary_table=ans_primary_table,
         track=ans_track,
+        primary_table=ans_primary_table,
         type=ans_type,
-        track_group=ans_group,
+        group=ans_group,
         composite_track=ans_composite_track
     )
 }

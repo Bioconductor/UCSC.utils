@@ -51,9 +51,8 @@ get_UCSC_chrom_sizes(genome, api.url=UCSC.api.url(), recache=FALSE)
           way of retrieving the chromosome information of a given NCBI
           assembly or UCSC genome.
 
-    \item \code{\link{list_UCSC_primary_tables_and_tracks}} to get the
-          list of primary tables and associated tracks for a given
-          UCSC genome.
+    \item \code{\link{list_UCSC_tracks}} to get the list of tracks and
+          associated primary tables for a given UCSC genome.
 
     \item \code{\link{UCSC.api.url}} for how to use an alternative
           UCSC API URL by default.

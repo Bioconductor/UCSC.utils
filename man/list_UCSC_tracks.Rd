@@ -1,17 +1,17 @@
-\name{list_UCSC_primary_tables_and_tracks}
+\name{list_UCSC_tracks}
 
-\alias{list_UCSC_primary_tables_and_tracks}
+\alias{list_UCSC_tracks}
 
-\title{List UCSC primary tables and associated tracks}
+\title{List UCSC tracks and associated primary tables}
 
 \description{
-  Get the list of primary tables and associated tracks for a given
+  Get the list of tracks and associated primary tables for a given
   UCSC genome.
 }
 
 \usage{
-list_UCSC_primary_tables_and_tracks(genome, track_group=NULL,
-                                    api.url=UCSC.api.url(), recache=FALSE)
+list_UCSC_tracks(genome, group=NULL,
+                 api.url=UCSC.api.url(), recache=FALSE)
 }
 
 \arguments{
@@ -20,10 +20,10 @@ list_UCSC_primary_tables_and_tracks(genome, track_group=NULL,
     \code{"mm39"}, or \code{"sacCer3"}. See \code{?\link{list_UCSC_genomes}}
     for how to get the list of valid UCSC genome names.
   }
-  \item{track_group}{
-    \code{NULL} or a single string specifying the group of tables+tracks
-    to retrieve. By default, all tracks are kept.
-    Passing \code{track_group=NA} is accepted and will keep only rows
+  \item{group}{
+    \code{NULL} or a single string specifying the group of tracks
+    to return. By default, all tracks are returned.
+    Passing \code{group=NA} is accepted and will return only rows
     associated with tracks that don't belong to any group.
   }
   \item{api.url}{
@@ -33,22 +33,22 @@ list_UCSC_primary_tables_and_tracks(genome, track_group=NULL,
     for more information.
   }
   \item{recache}{
-    \code{list_UCSC_primary_tables_and_tracks()} uses a cache mechanism
+    \code{list_UCSC_tracks()} uses a cache mechanism
     so the information retrieved for a given genome only gets downloaded
     once during the current R session (note that the caching is done in
     memory so cached information does NOT persist across sessions).
     Setting \code{recache} to \code{TRUE} forces a new download (and
-    recaching) of the tables+tracks information for the specified genome.
+    recaching) of the list of tracks for the specified genome.
   }
 }
 
 \value{
-  A data frame with 1 row per primary table and 5 columns:
-  \code{primary_table}, \code{track}, \code{type}, code{track_group},
+  A data frame with 1 row per track and 5 columns:
+  \code{track}, \code{primary_table}, \code{type}, code{group},
   \code{composite_track}.
 
-  Note that the \code{track_group} and \code{composite_track} columns
-  can contain \code{NA}s.
+  Note that columns \code{group} and \code{composite_track} can
+  contain \code{NA}s.
 }
 
 \seealso{
@@ -67,14 +67,14 @@ list_UCSC_primary_tables_and_tracks(genome, track_group=NULL,
 }
 
 \examples{
-## List all primary tables and tracks for ce2 genome:
-list_UCSC_primary_tables_and_tracks("ce2")
+## List all tracks for ce2 genome:
+list_UCSC_tracks("ce2")
 
-## List primary tables and tracks in the "rna" group only:
-list_UCSC_primary_tables_and_tracks("ce2", track_group="rna")
+## List tracks in the "rna" group only:
+list_UCSC_tracks("ce2", group="rna")
 
 ## Note that some tracks don't belong to any group:
-list_UCSC_primary_tables_and_tracks("hg38", track_group=NA)
+list_UCSC_tracks("hg38", group=NA)
 }
 
 \keyword{manip}
