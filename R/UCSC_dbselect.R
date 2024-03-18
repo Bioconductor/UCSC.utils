@@ -30,6 +30,41 @@
     SQL
 }
 
+.fix_RMariaDB_blobs <- function(df)
+{
+    stopifnot(is.data.frame(df))
+    idx <- which(vapply(df, inherits, logical(1), "blob"))
+    df[idx] <- lapply(df[idx],
+        function(col) {
+            col2 <- try(toListOfIntegerVectors(col), silent=TRUE)
+            if (!inherits(col2, "try-error"))
+                return(col2)
+            vapply(col, rawToChar, character(1), USE.NAMES=FALSE)
+        }
+    )
+    df
+}
+
+.unmangle_RMariaDB_colnames <- function(colnames)
+{
+    stopifnot(is.character(colnames))
+    ncol <- length(colnames)
+    if (ncol == 0L)
+        return(colnames)
+
+    ## Identify columns with the dumb suffixes.
+    dumb_suffixes <- paste0("..", seq_len(ncol))
+    nc1 <- nchar(colnames)
+    nc2 <- nchar(dumb_suffixes)
+    suffixes <- substr(colnames, start=nc1-nc2+1L, stop=nc1)
+    idx <- which(suffixes == dumb_suffixes)
+
+    ## Remove the dumb suffixes.
+    colnames[idx] <- substr(colnames[idx], start=1L, stop=nc1[idx]-nc2[idx])
+
+    colnames
+}
+
 ### See https://genome.ucsc.edu/goldenpath/help/mysql.html for how to connect
 ### to a MariaDB server at UCSC.
 ### Here is an example of how to query the server on the US west coast from
@@ -53,11 +88,10 @@ UCSC_dbselect <- function(dbname, from, columns=NULL, where=NULL,
                                                   port=port)
     on.exit(DBI::dbDisconnect(dbconn))
     ans <- DBI::dbGetQuery(dbconn, SQL)
-    for (j in seq_along(ans)) {
-        if (!inherits(ans[[j]], "blob"))
-            next
-        ans[[j]] <- toListOfIntegerVectors(ans[[j]])
-    }
+
+    ## Undo some of the unfortunate things RMariaDB does to the result.
+    ans <- .fix_RMariaDB_blobs(ans)
+    colnames(ans) <- .unmangle_RMariaDB_colnames(colnames(ans))
     ans
 }
 
