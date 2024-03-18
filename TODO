@@ -1,3 +1,9 @@
+- See if the track info returned by the /list/tracks endpoint says whether
+  a track is db-based or file-based. If that's the case, make this info
+  available via list_UCSC_tracks().
+
 - Compare results obtained with get_UCSC_chrom_sizes() with result obtained
-  with GenomeInfoDb:::fetch_chrom_sizes_from_UCSC().
+  with GenomeInfoDb:::fetch_chrom_sizes_from_UCSC(). Note that the chrom sizes
+  can also bet obtained with UCSC_dbselect("hg38", "chromInfo") but that
+  doesn't for all genomes (e.g. doesn't work for hs1).
 
