@@ -4,7 +4,7 @@
 ###
 
 
-.make_SQL_SELECT <- function(from, columns=NULL, where=NULL)
+.make_SQL_SELECT <- function(from, columns=NULL, where=NULL, MoreSQL=NULL)
 {
     if (!(isSingleString(from) && nzchar(from)))
         stop(wmsg("'from' must be a single (non-empty) string"))
@@ -22,10 +22,18 @@
     }
 
     SQL <- sprintf("SELECT %s FROM %s", columns, from)
+
     if (!is.null(where)) {
         if (!(isSingleString(where) && nzchar(where)))
             stop(wmsg("'where' must be NULL or a single (non-empty) string"))
         SQL <- paste(SQL, "WHERE", where)
+    }
+
+    if (!is.null(MoreSQL)) {
+        if (!is.character(MoreSQL))
+            stop(wmsg("'MoreSQL' must be NULL or a character vector"))
+        if (length(MoreSQL) != 0L)
+            SQL <- paste(SQL, paste(MoreSQL, collapse=" "))
     }
     SQL
 }
@@ -74,14 +82,14 @@
 ###         -e "select count(*) from knownToLocusLink;"
 ###
 ### By default UCSC_dbselect() uses the server located on the US west coast.
-UCSC_dbselect <- function(dbname, from, columns=NULL, where=NULL,
+UCSC_dbselect <- function(dbname, from, columns=NULL, where=NULL, MoreSQL=NULL,
                           host="genome-mysql.soe.ucsc.edu",
                           port=3306)
 {
     load_package_gracefully("DBI", "UCSC_dbselect()")
     load_package_gracefully("RMariaDB", "UCSC_dbselect()")
 
-    SQL <- .make_SQL_SELECT(from, columns=columns, where=where)
+    SQL <- .make_SQL_SELECT(from, columns=columns, where=where, MoreSQL=MoreSQL)
     dbconn <- DBI::dbConnect(RMariaDB::MariaDB(), dbname=dbname,
                                                   username="genome",
                                                   host=host,

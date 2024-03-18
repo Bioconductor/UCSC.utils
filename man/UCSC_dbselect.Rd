@@ -12,7 +12,7 @@
 }
 
 \usage{
-UCSC_dbselect(dbname, from, columns=NULL, where=NULL,
+UCSC_dbselect(dbname, from, columns=NULL, where=NULL, MoreSQL=NULL,
               host="genome-mysql.soe.ucsc.edu", port=3306)
 }
 
@@ -29,11 +29,17 @@ UCSC_dbselect(dbname, from, columns=NULL, where=NULL,
     the name of an SQL table, or a join-clause, or a sub-query.
   }
   \item{columns}{
-    A character vector specifying the table columns to retrieve.
+    \code{NULL} (the default), or a character vector specifying the columns
+    to return. By default all columns are returned.
   }
   \item{where}{
-    A single string specifying the \code{WHERE} clause of the
-    \code{SELECT} statement.
+    \code{NULL} (the default), or a single string specifying the \code{WHERE}
+    clause of the \code{SELECT} statement.
+  }
+  \item{MoreSQL}{
+    \code{NULL} (the default), or a character vector containing additional
+    SQL clauses e.g. \code{GROUP BY}, \code{ORDER BY}, and/or \code{LIMIT}
+    clauses.
   }
   \item{host}{
     A single string specifying the name of the server's host
@@ -75,13 +81,22 @@ UCSC_dbselect(dbname, from, columns=NULL, where=NULL,
 }
 
 \examples{
-### Retrieve primary table of "SGP Genes" track for hg38:
+### Retrieve full "ncbiGene" table ("NCBI Genes" track) for eboVir3:
+UCSC_dbselect("eboVir3", "ncbiGene")
+
+### Retrieve subset of "sgpGene" table ("SGP Genes" track) for hg38:
 UCSC_dbselect("hg38", "sgpGene", where="chrom='chrM'")
 
 ### Retrieve subset of "gap" table for gorGor6:
 columns <- c("chrom", "chromStart", "chromEnd", "type")
 where <- "chrom='chrX' AND type='contig'"
 UCSC_dbselect("gorGor6", "gap", columns=columns, where=where)
+
+### With a LEFT JOIN and a LIMIT clause:
+from <- paste("ncbiRefSeq LEFT JOIN ncbiRefSeqLink",
+              "ON ncbiRefSeq.name=ncbiRefSeqLink.id")
+res <- UCSC_dbselect("sacCer3", from, MoreSQL="LIMIT 5")
+dim(res)
 
 ## WARNING: UCSC_dbselect() does not work with all tracks!
 ## For example it does not work with bigBed tracks:
