@@ -18,7 +18,7 @@ UCSC_dbselect(dbname, from, columns=NULL, where=NULL, MoreSQL=NULL,
 
 \arguments{
   \item{dbname}{
-    A single string specifying the name of database to connect to.
+    A single string specifying the name of the database to connect to.
     This is usually the name of a valid UCSC genome e.g. \code{"hg38"},
     \code{"mm39"}, or \code{"sacCer3"}. See \code{?\link{list_UCSC_genomes}}
     for how to get the list of valid UCSC genome names.
