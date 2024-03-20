@@ -44,7 +44,7 @@ list_UCSC_tracks(genome, group=NULL,
 
 \value{
   A data frame with 1 row per track and 5 columns:
-  \code{track}, \code{primary_table}, \code{type}, code{group},
+  \code{track}, \code{primary_table}, \code{type}, \code{group},
   \code{composite_track}.
 
   Note that columns \code{group} and \code{composite_track} can
