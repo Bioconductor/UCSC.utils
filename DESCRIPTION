@@ -10,7 +10,7 @@ biocViews: Infrastructure, GenomeAssembly, Annotation, GenomeAnnotation,
 	DataImport
 URL: https://bioconductor.org/packages/UCSC.utils
 BugReports: https://github.com/Bioconductor/UCSC.utils/issues
-Version: 0.99.1
+Version: 0.99.2
 License: Artistic-2.0
 Encoding: UTF-8
 Authors@R: person("Hervé", "Pagès", role=c("aut", "cre"),
@@ -18,3 +18,12 @@ Authors@R: person("Hervé", "Pagès", role=c("aut", "cre"),
 Imports: methods, stats, httr, rjson, S4Vectors
 Suggests: DBI, RMariaDB, GenomeInfoDb, testthat, knitr, rmarkdown, BiocStyle
 VignetteBuilder: knitr
+Collate: 00utils.R
+	UCSC.api.url.R
+	REST_API.R
+	list_UCSC_genomes.R
+	get_UCSC_chrom_sizes.R
+	list_UCSC_tracks.R
+	fetch_UCSC_track_data.R
+	UCSC_dbselect.R
+	zzz.R

@@ -1,6 +1,6 @@
 import(methods)
 importFrom(stats, setNames)
-importFrom(httr, GET, content)
+importFrom(httr, GET, content, user_agent)
 importFrom(rjson, fromJSON)
 
 importFrom(S4Vectors, wmsg, isTRUEorFALSE, isSingleNumber,
