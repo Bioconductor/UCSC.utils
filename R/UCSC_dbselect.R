@@ -86,8 +86,8 @@ UCSC_dbselect <- function(dbname, from, columns=NULL, where=NULL, MoreSQL=NULL,
                           host="genome-mysql.soe.ucsc.edu",
                           port=3306)
 {
-    load_package_gracefully("DBI", "UCSC_dbselect()")
-    load_package_gracefully("RMariaDB", "UCSC_dbselect()")
+    S4Vectors:::load_package_gracefully("DBI", "by UCSC_dbselect()")
+    S4Vectors:::load_package_gracefully("RMariaDB", "by UCSC_dbselect()")
 
     SQL <- .make_SQL_SELECT(from, columns=columns, where=where, MoreSQL=MoreSQL)
     dbconn <- DBI::dbConnect(RMariaDB::MariaDB(), dbname=dbname,
