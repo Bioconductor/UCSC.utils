@@ -38,15 +38,17 @@
     SQL
 }
 
-.fix_RMariaDB_blobs <- function(df)
+.fix_RMariaDB_blobs <- function(df, try.blob.as.list=FALSE)
 {
-    stopifnot(is.data.frame(df))
+    stopifnot(is.data.frame(df), isTRUEorFALSE(try.blob.as.list))
     idx <- which(vapply(df, inherits, logical(1), "blob"))
     df[idx] <- lapply(df[idx],
         function(col) {
-            col2 <- try(toListOfIntegerVectors(col), silent=TRUE)
-            if (!inherits(col2, "try-error"))
-                return(col2)
+            if (try.blob.as.list) {
+                col2 <- try(toListOfIntegerVectors(col), silent=TRUE)
+                if (!inherits(col2, "try-error"))
+                    return(col2)
+            }
             vapply(col, rawToChar, character(1), USE.NAMES=FALSE)
         }
     )
@@ -83,11 +85,12 @@
 ###
 ### By default UCSC_dbselect() uses the server located on the US west coast.
 UCSC_dbselect <- function(dbname, from, columns=NULL, where=NULL, MoreSQL=NULL,
-                          host="genome-mysql.soe.ucsc.edu",
-                          port=3306)
+                          host="genome-mysql.soe.ucsc.edu", port=3306,
+                          try.blob.as.list=FALSE)
 {
     S4Vectors:::load_package_gracefully("DBI", "by UCSC_dbselect()")
     S4Vectors:::load_package_gracefully("RMariaDB", "by UCSC_dbselect()")
+    stopifnot(isTRUEorFALSE(try.blob.as.list))
 
     SQL <- .make_SQL_SELECT(from, columns=columns, where=where, MoreSQL=MoreSQL)
     dbconn <- DBI::dbConnect(RMariaDB::MariaDB(), dbname=dbname,
@@ -98,7 +101,7 @@ UCSC_dbselect <- function(dbname, from, columns=NULL, where=NULL, MoreSQL=NULL,
     ans <- DBI::dbGetQuery(dbconn, SQL)
 
     ## Undo some of the unfortunate things RMariaDB does to the result.
-    ans <- .fix_RMariaDB_blobs(ans)
+    ans <- .fix_RMariaDB_blobs(ans, try.blob.as.list=try.blob.as.list)
     colnames(ans) <- .unmangle_RMariaDB_colnames(colnames(ans))
     ans
 }
