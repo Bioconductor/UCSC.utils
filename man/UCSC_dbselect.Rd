@@ -13,7 +13,8 @@
 
 \usage{
 UCSC_dbselect(dbname, from, columns=NULL, where=NULL, MoreSQL=NULL,
-              host="genome-mysql.soe.ucsc.edu", port=3306)
+              host="genome-mysql.soe.ucsc.edu", port=3306,
+              try.blob.as.list=FALSE)
 }
 
 \arguments{
@@ -46,6 +47,13 @@ UCSC_dbselect(dbname, from, columns=NULL, where=NULL, MoreSQL=NULL,
   }
   \item{port}{
     The TCP/IP port to use to connect to the server.
+  }
+  \item{try.blob.as.list}{
+    By default, any column of type \code{blob} returned by \pkg{RMariaDB}
+    is converted to a character vector.
+    If \code{try.blob.as.list} is set to \code{TRUE}, \code{UCSC_dbselect()}
+    first tries to convert any blob column to a list of integers, and falls
+    back to the character vector representation if that didn't work.
   }
 }
 
@@ -82,7 +90,20 @@ UCSC_dbselect(dbname, from, columns=NULL, where=NULL, MoreSQL=NULL,
 
 \examples{
 ### Retrieve full "ncbiGene" table ("NCBI Genes" track) for eboVir3:
-UCSC_dbselect("eboVir3", "ncbiGene")
+df <- UCSC_dbselect("eboVir3", "ncbiGene")
+df
+
+### The exonStarts and exonEnds columns are character vectors:
+sapply(df, class)
+df$exonStarts
+df$exonEnds
+
+### Use 'try.blob.as.list=TRUE' to have them returned as lists of
+### integers:
+df2 <- UCSC_dbselect("eboVir3", "ncbiGene", try.blob.as.list=TRUE)
+sapply(df2, class)
+df2$exonStarts
+df2$exonEnds
 
 ### Retrieve subset of "sgpGene" table ("SGP Genes" track) for hg38:
 UCSC_dbselect("hg38", "sgpGene", where="chrom='chrM'")
