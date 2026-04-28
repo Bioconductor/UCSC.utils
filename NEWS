@@ -1,3 +1,17 @@
+VERSION 1.8.0
+-------------
+
+SIGNIFICANT USER-VISIBLE CHANGES
+
+    o Add 'try.blob.as.list' argument to UCSC_dbselect().
+      The argument is set to FALSE by default. This means that, from now on,
+      any column of type blob returned by RMariaDB is converted to a character
+      vector by default. Note that setting 'try.blob.as.list' to TRUE restores
+      the previous behavior where UCSC_dbselect() first tries to convert any
+      blob column to a list of integers, and falls back to the character vector
+      representation if that didn't work.
+
+
 VERSION 1.6.0
 -------------
 
