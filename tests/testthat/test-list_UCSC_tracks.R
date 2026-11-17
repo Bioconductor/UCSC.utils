@@ -25,7 +25,7 @@ test_that("list_UCSC_tracks()", {
     result <- list_UCSC_tracks("hg38", group=NA)
     .check_list_UCSC_tracks_result(result)
     expect_true(nrow(result) >= 2L)
-    expect_true(is.na(tail(levels(result$group), n=1L)))
+    expect_true(all(is.na(result$group)))
     expect_true(all(is.na(as.character(result$group))))
 
     expect_error(list_UCSC_tracks(NULL))

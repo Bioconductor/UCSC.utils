@@ -70,7 +70,7 @@
 
 
 ### - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-### We only support the following endpoints at the moment:
+### We primarily support the following endpoints at the moment:
 ###   - /list/ucscGenomes
 ###   - /list/chromosomes
 ###   - /list/tracks
@@ -153,5 +153,26 @@ API_get_track_data <- function(genome, primary_table, api.url=UCSC.api.url())
     if (!is.null(parsed_json[["track"]]))
         stopifnot(identical(parsed_json[["track"]], primary_table))
     parsed_json
+}
+
+
+### - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+### Other supported end points
+###
+
+### Endpoint /list/publicHubs
+### Not used at the moment.
+API_list_public_hubs <- function(api.url=UCSC.api.url())
+{
+    api.url <- normarg_api.url(api.url)
+
+    endpoint <- "list/publicHubs"
+    fallback_errmsg <- c("failed to get list of public hubs from ", api.url)
+    parsed_json <- .query_API(endpoint, api.url=api.url,
+                              fallback_errmsg=fallback_errmsg)
+    ans <- parsed_json[["publicHubs"]]
+    ## Sanity check.
+    stopifnot(is.list(ans))
+    ans
 }
 

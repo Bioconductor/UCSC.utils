@@ -45,7 +45,7 @@ list_UCSC_tracks <- function(genome, group=NULL,
             if (is.na(idx)) NA_character_ else track[[idx]]
         },
         character(1), USE.NAMES=FALSE
-    ), exclude=character(0))
+    ))
     if (!is.null(group)) {
         keep_idx <- which(track_groups %in% group)
         genome_tracks <- genome_tracks[keep_idx]
